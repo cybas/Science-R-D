@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -8,7 +9,7 @@ import {
 import { usePathname } from 'next/navigation';
 import {
   Award,
-  Beaker,
+  FlaskConical,
   Database,
   FileText,
   Folder,
@@ -26,6 +27,7 @@ const links = [
   { href: '/molecules', label: 'Molecules', icon: MoleculeIcon },
   { href: '/polymers', label: 'Polymers', icon: Spline },
   { href: '/projects', label: 'Projects', icon: FolderKanban },
+  { href: '/experiments', label: 'Experiments', icon: FlaskConical },
   { href: '/papers', label: 'Papers', icon: FileText },
   { href: '/patents', label: 'Patents', icon: Award },
   { href: '/sources', label: 'Sources', icon: Database },
