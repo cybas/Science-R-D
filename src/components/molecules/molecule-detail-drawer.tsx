@@ -92,7 +92,7 @@ export function MoleculeDetailDrawer({
                  <Table>
                     <TableBody>
                         <TableRow><TableCell className="font-medium">Melting Point</TableCell><TableCell>N/A</TableCell></TableRow>
-                        <TableRow><TableCell className="font-medium">Boiling Point</TableCell><TableCell>N/A</TableRow></TableRow>
+                        <TableRow><TableCell className="font-medium">Boiling Point</TableCell><TableCell>N/A</TableCell></TableRow>
                         <TableRow><TableCell className="font-medium">Density</TableCell><TableCell>N/A</TableCell></TableRow>
                         <TableRow><TableCell className="font-medium">logP</TableCell><TableCell>N/A</TableCell></TableRow>
                         <TableRow><TableCell className="font-medium">Solubility</TableCell><TableCell>N/A</TableCell></TableRow>
