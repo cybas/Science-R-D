@@ -76,7 +76,7 @@ export function PolymersClient({ polymers, allChemicals }: PolymersClientProps) 
         const basketMonomers = allChemicals.filter(c => c.role === 'Monomer').slice(0,2);
         setBasket(basketMonomers);
     }
-  }, []);
+  }, [searchParams, allChemicals]);
 
   // Update URL when filters change
   useEffect(() => {
