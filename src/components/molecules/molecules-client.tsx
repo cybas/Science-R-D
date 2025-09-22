@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Export, Settings2 } from 'lucide-react';
+import { Share2, Settings2 } from 'lucide-react';
 import { MoleculeCard } from './molecule-card';
 import { MoleculeSearch } from './molecule-search';
 import { MoleculeFilters } from './molecule-filters';
@@ -250,7 +250,7 @@ export function MoleculesClient({ molecules }: MoleculesClientProps) {
           </p>
         </div>
         <Button variant="outline" size="icon">
-          <Export className="h-4 w-4" />
+          <Share2 className="h-4 w-4" />
           <span className="sr-only">Export</span>
         </Button>
       </div>
