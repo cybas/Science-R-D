@@ -35,8 +35,23 @@ export function ActivityCard({ item, onAskAi, onSaveToMemory, onAddToBasket, onC
   
   const title = getTitle();
 
+  const renderCardContent = () => {
+    switch (item.type) {
+      case 'chemical':
+        return <ChemicalCardContent item={item as Chemical} />;
+      case 'polymer':
+        return <PolymerCardContent item={item as Polymer} />;
+      case 'paper':
+        return <PaperCardContent item={item as Paper} />;
+      case 'patent':
+        return <PatentCardContent item={item as Patent} />;
+      default:
+        return null;
+    }
+  };
+
   return (
-    <Card className={cn("overflow-hidden", isComparing && item.type !== 'polymer' && 'opacity-50', isComparing && item.type === 'polymer' && 'cursor-pointer hover:border-primary')}>
+    <Card className={cn("overflow-hidden", isComparing && item.type !== 'polymer' && 'opacity-50', isComparing && item.type === 'polymer' && 'cursor-pointer hover:border-primary')} data-item-id={item.id} data-item-type={item.type}>
       <CardHeader className="flex-row items-start justify-between gap-4 p-4 md:p-5">
         <div className="space-y-1">
           <CardTitle className="text-base font-semibold leading-tight md:text-lg">
@@ -46,9 +61,12 @@ export function ActivityCard({ item, onAskAi, onSaveToMemory, onAddToBasket, onC
             Source: {item.source} · {item.date}
           </p>
         </div>
-        <div className="hidden items-center gap-1 md:flex">
-          <Button
-            variant="outline"
+      </CardHeader>
+      <CardContent className="p-4 pt-0 md:p-5 md:pt-0">
+        {renderCardContent()}
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+           <Button
+            variant="primary"
             size="sm"
             onClick={() => onAskAi(item)}
             aria-label={`Ask R&A Ai about ${title}`}
@@ -57,22 +75,22 @@ export function ActivityCard({ item, onAskAi, onSaveToMemory, onAddToBasket, onC
             <span>Ask R&A Ai</span>
           </Button>
           <Button
-            variant="outline"
+            variant="secondary"
             size="sm"
             onClick={() => onSaveToMemory(item)}
           >
             <Bookmark className={cn(isSaved && 'fill-primary')} />
             <span>{isSaved ? 'Saved' : 'Save'}</span>
           </Button>
-          <Button asChild variant="outline" size="sm">
-            <Link href={item.href} target="_blank">
+          <Button asChild variant="secondary" size="sm">
+            <Link href={item.href} target="_blank" rel="noopener noreferrer">
               <ExternalLink />
               <span>Open Source</span>
             </Link>
           </Button>
           {item.type === 'chemical' && (
             <Button
-              variant="outline"
+              variant="secondary"
               size="sm"
               onClick={() => onAddToBasket(item)}
             >
@@ -81,56 +99,13 @@ export function ActivityCard({ item, onAskAi, onSaveToMemory, onAddToBasket, onC
             </Button>
           )}
           {item.type === 'polymer' && (
-            <Button variant="outline" size="sm" onClick={handleCompareClick}>
+            <Button variant="secondary" size="sm" onClick={handleCompareClick}>
               <GitCompare />
               <span>Compare</span>
             </Button>
           )}
         </div>
-      </CardHeader>
-      <CardContent className="p-4 pt-0 md:p-5 md:pt-0">
-        {renderCardContent()}
-        <div className="mt-4 flex flex-wrap items-center gap-2 md:hidden">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onAskAi(item)}
-            aria-label={`Ask R&A Ai about ${title}`}
-          >
-            <MessageSquare />
-            <span>Ask R&A Ai</span>
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onSaveToMemory(item)}
-          >
-            <Bookmark className={cn(isSaved && 'fill-primary')} />
-            <span>{isSaved ? 'Saved' : 'Save'}</span>
-          </Button>
-          <Button asChild variant="outline" size="sm">
-            <Link href={item.href} target="_blank">
-              <ExternalLink />
-              <span>Open</span>
-            </Link>
-          </Button>
-          {item.type === 'chemical' && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onAddToBasket(item)}
-            >
-              <PlusSquare className={cn(isInBasket && 'fill-primary')} />
-              <span>Basket</span>
-            </Button>
-          )}
-          {item.type === 'polymer' && (
-            <Button variant="outline" size="sm" onClick={handleCompareClick}>
-              <GitCompare />
-              <span>Compare</span>
-            </Button>
-          )}
-        </div>
+        <p className="mt-3 text-xs text-muted-foreground md:hidden">Tip: press A to ask about this item</p>
       </CardContent>
     </Card>
   );
