@@ -18,6 +18,7 @@ import { FilterSheet } from './filter-sheet';
 
 type MoleculesClientProps = {
   molecules: Chemical[];
+  searchParams?: { [key: string]: string | string[] | undefined };
 };
 
 type FilterValues = {
@@ -40,7 +41,7 @@ const defaultFilters: FilterValues = {
   sort: 'relevance',
 };
 
-export function MoleculesClient({ molecules }: MoleculesClientProps) {
+export function MoleculesClient({ molecules, searchParams: serverSearchParams }: MoleculesClientProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -53,7 +54,7 @@ export function MoleculesClient({ molecules }: MoleculesClientProps) {
   const [memoryItems, setMemoryItems] = useState<Chemical[]>([]);
   
   const [filters, setFilters] = useState<FilterValues>(() => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(serverSearchParams as any);
     return {
       role: params.get('role') || defaultFilters.role,
       hazards: params.get('hazard')?.split(',') || defaultFilters.hazards,
