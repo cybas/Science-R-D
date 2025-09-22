@@ -51,8 +51,6 @@ export function MoleculesClient({ molecules }: MoleculesClientProps) {
   const [mode, setMode] = useState(searchParams.get('mode') || 'similarity');
   const [basket, setBasket] = useState<Chemical[]>([]);
   const [memoryItems, setMemoryItems] = useState<Chemical[]>([]);
-  const [compareList, setCompareList] = useState<Chemical[]>([]);
-  const [isComparing, setIsComparing] = useState(false);
   
   const [filters, setFilters] = useState<FilterValues>(() => {
     const params = new URLSearchParams(searchParams);
@@ -121,7 +119,7 @@ export function MoleculesClient({ molecules }: MoleculesClientProps) {
     }
 
     if (filters.hazards.length > 0) {
-      items = items.filter(m => filters.hazards.includes(m.hazard));
+      items = items.filter(m => !!m.hazard && filters.hazards.includes(m.hazard));
     }
     
     items = items.filter(m => {
@@ -132,7 +130,9 @@ export function MoleculesClient({ molecules }: MoleculesClientProps) {
     if (filters.sort === 'mw') {
       items.sort((a, b) => parseFloat(a.mw) - parseFloat(b.mw));
     } else if (filters.sort === 'recent') {
-      items.sort((a, b) => parseInt(a.date) - parseInt(b.date));
+      // Assuming date is "Xd ago" format for simplicity
+      const getDateValue = (date: string) => parseInt(date.split('d')[0]);
+      items.sort((a, b) => getDateValue(a.date) - getDateValue(b.date));
     }
 
     return items;
@@ -155,19 +155,33 @@ export function MoleculesClient({ molecules }: MoleculesClientProps) {
     return null;
   }, [searchParams, molecules]);
 
+  const getHoveredItem = () => {
+    const activeCard = document.querySelector(':hover [data-item-id]');
+    if (activeCard) {
+        const id = activeCard.getAttribute('data-item-id');
+        if(id) {
+            return molecules.find(i => i.id === id);
+        }
+    }
+    return undefined;
+  }
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      const item = getHoveredItem();
+      if (!item) return;
+
       if (event.key.toLowerCase() === 'a') {
-        const activeCard = document.querySelector(':hover [data-item-id]');
-        if (activeCard) {
-            event.preventDefault();
-            const id = activeCard.getAttribute('data-item-id');
-            const type = activeCard.getAttribute('data-item-type');
-            if(id && type) {
-                const item = molecules.find(i => i.id === id);
-                if (item) handleAskAi(item);
-            }
-        }
+        event.preventDefault();
+        handleAskAi(item);
+      }
+      if (event.key.toLowerCase() === 'b') {
+        event.preventDefault();
+        handleAddToBasket(item);
+      }
+      if (event.key.toLowerCase() === 's') {
+        event.preventDefault();
+        handleSaveToMemory(item);
       }
       if (event.key === 'Escape') {
           if (activeDetailItem) handleCloseDetailDrawer();
@@ -180,20 +194,6 @@ export function MoleculesClient({ molecules }: MoleculesClientProps) {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [activeDetailItem, activeAskAiItem, molecules]);
-
-  const comparedMoleculeIds = useMemo(() => {
-    const compare = searchParams.get('compare');
-    return compare ? compare.split(',') : [];
-  }, [searchParams]);
-
-  const comparedMolecules = useMemo(() => {
-    if (comparedMoleculeIds.length >= 2) {
-      return comparedMoleculeIds
-        .map(id => molecules.find(m => m.id === id))
-        .filter(Boolean) as Chemical[];
-    }
-    return null;
-  }, [comparedMoleculeIds, molecules]);
 
   const handleOpenDetailDrawer = (item: Chemical) => {
     const params = new URLSearchParams(searchParams);
@@ -233,7 +233,8 @@ export function MoleculesClient({ molecules }: MoleculesClientProps) {
         description: `${item.title.split('—')[0].trim()} has been added to your memory.`,
       });
     } else {
-        toast({ title: "Already in Memory" });
+        setMemoryItems(prev => prev.filter(i => i.id !== item.id));
+        toast({ title: "Removed from Memory" });
     }
   };
 
@@ -254,35 +255,6 @@ export function MoleculesClient({ molecules }: MoleculesClientProps) {
     setBasket((prev) => prev.filter((basketItem) => basketItem.id !== item.id));
     toast({ title: 'Removed from Basket' });
   };
-  
-  const handleCompareToggle = (item: Chemical) => {
-    setIsComparing(true);
-    setCompareList(prev => {
-        const exists = prev.find(i => i.id === item.id);
-        let newList;
-        if (exists) {
-            newList = prev.filter(i => i.id !== item.id);
-        } else {
-            newList = [...prev, item];
-        }
-
-        if (newList.length >= 2) {
-            toast({ title: 'Added to Compare' });
-            const params = new URLSearchParams(searchParams);
-            params.set('compare', newList.map(i => i.id).join(','));
-            router.push(`${pathname}?${params.toString()}`);
-            setIsComparing(false);
-            return [];
-        }
-        return newList;
-    });
-  };
-
-  const handleCloseCompareSheet = () => {
-    const params = new URLSearchParams(searchParams);
-    params.delete('compare');
-    router.push(`${pathname}?${params.toString()}`);
-  }
   
   const handleFilterChange = (newFilters: Partial<FilterValues>) => {
     setFilters(prev => ({...prev, ...newFilters}));
@@ -323,9 +295,9 @@ export function MoleculesClient({ molecules }: MoleculesClientProps) {
 
       <div className="grid grid-cols-12 gap-8">
         <div className="col-span-12 lg:col-span-9">
-          <div className="space-y-4">
-            {filteredMolecules.length > 0 ? (
-              filteredMolecules.map((molecule) => (
+          {filteredMolecules.length > 0 ? (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {filteredMolecules.map((molecule) => (
                 <MoleculeCard
                   key={molecule.id}
                   molecule={molecule}
@@ -333,17 +305,17 @@ export function MoleculesClient({ molecules }: MoleculesClientProps) {
                   onSaveToMemory={() => handleSaveToMemory(molecule)}
                   onAskAi={() => handleAskAi(molecule)}
                   onAddToBasket={() => handleAddToBasket(molecule)}
-                  onCompare={() => handleCompareToggle(molecule)}
-                  isComparing={isComparing}
-                  isSelectedForCompare={!!compareList.find(c => c.id === molecule.id)}
                   isSaved={isSaved(molecule)}
                   isInBasket={isInBasket(molecule)}
                 />
-              ))
+              ))}
+            </div>
             ) : (
-              <div className="flex h-96 items-center justify-center rounded-lg border-2 border-dashed">
+              <div className="flex flex-col h-96 items-center justify-center rounded-lg border-2 border-dashed">
                 <div className="text-center">
-                  <p className="text-muted-foreground">No results found.</p>
+                  <h3 className="text-lg font-semibold">No Results Found</h3>
+                  <p className="text-muted-foreground mt-2">Try clearing your filters or pasting a SMILES string.</p>
+                  <p className="text-xs text-muted-foreground mt-4">e.g., O=C(O)c1ccc(cc1)C(=O)O for Terephthalic acid</p>
                   <div className="mt-4 flex gap-2 justify-center">
                      <Button variant="outline" onClick={() => setFilters(defaultFilters)}>Clear filters</Button>
                      <Button variant="secondary" onClick={() => {setQuery(''); setFilters({...defaultFilters, role: 'Monomer'})}}>Show all monomers</Button>
@@ -351,7 +323,6 @@ export function MoleculesClient({ molecules }: MoleculesClientProps) {
                 </div>
               </div>
             )}
-          </div>
         </div>
         <div className="col-span-12 lg:col-span-3">
           {!isMobile && <SelectedBasket basket={basket} onRemove={handleRemoveFromBasket} />}
@@ -373,22 +344,16 @@ export function MoleculesClient({ molecules }: MoleculesClientProps) {
         item={activeAskAiItem} 
         open={!!activeAskAiItem} 
         onOpenChange={handleCloseAskAiDrawer}
-        onSaveToMemory={handleSaveToMemory}
+        onSaveToMemory={() => activeAskAiItem && handleSaveToMemory(activeAskAiItem)}
         isSaved={activeAskAiItem ? isSaved(activeAskAiItem) : false}
       />
       
-      <MoleculeCompareSheet
+      {/* Compare Sheet might be needed later, but the prompt does not require wiring it up now */}
+      {/* <MoleculeCompareSheet
         molecules={comparedMolecules}
         open={!!comparedMolecules}
         onOpenChange={handleCloseCompareSheet}
-      />
-
-      {isComparing && (
-        <div className="fixed bottom-4 right-4 z-50 bg-background border rounded-lg p-4 shadow-lg flex items-center gap-4">
-          <p>Select {3 - compareList.length} more molecules to compare.</p>
-          <Button variant="ghost" onClick={() => { setIsComparing(false); setCompareList([]); }}>Cancel</Button>
-        </div>
-      )}
+      /> */}
       
       {isMobile && <SelectedBasket basket={basket} onRemove={handleRemoveFromBasket} isDrawer />}
       <FilterSheet 
