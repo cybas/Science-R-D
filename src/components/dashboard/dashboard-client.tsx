@@ -1,7 +1,8 @@
+
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { WelcomeCard } from '@/components/dashboard/welcome-card';
 import { FilterBar } from '@/components/dashboard/filter-bar';
 import { ActivityFeed } from '@/components/dashboard/activity-feed';
@@ -13,23 +14,34 @@ import type { FeedItem, Chemical, Polymer } from '@/lib/data';
 
 type DashboardClientProps = {
   initialItems: FeedItem[];
+  searchParams: { [key: string]: string | string[] | undefined };
 };
 
-export function DashboardClient({ initialItems }: DashboardClientProps) {
+export function DashboardClient({ initialItems, searchParams }: DashboardClientProps) {
   const [items, setItems] = useState<FeedItem[]>(initialItems);
   const [memoryItems, setMemoryItems] = useState<FeedItem[]>([]);
   const [basket, setBasket] = useState<Chemical[]>([]);
-  const [keywordFilters, setKeywordFilters] = useState<string[]>([]);
+  const [keywordFilters, setKeywordFilters] = useState<string[]>(() => {
+      const keywords = searchParams?.keywords;
+      if (typeof keywords === 'string') {
+          return keywords.split(',');
+      }
+      return [];
+  });
   
   const { toast } = useToast();
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
+  
+  const getSearchParam = (key: string) => {
+    const value = searchParams?.[key];
+    return Array.isArray(value) ? value[0] : value;
+  }
 
   const activeDrawerItem = useMemo(() => {
-    const itemId = searchParams.get('id');
-    const itemType = searchParams.get('type');
-    if (searchParams.get('drawer') === 'ask' && itemId && itemType) {
+    const itemId = getSearchParam('id');
+    const itemType = getSearchParam('type');
+    if (getSearchParam('drawer') === 'ask' && itemId && itemType) {
       return items.find(item => item.id === itemId && item.type === itemType) || null;
     }
     return null;
@@ -61,7 +73,7 @@ export function DashboardClient({ initialItems }: DashboardClientProps) {
   }, [activeDrawerItem, items]);
 
   const comparedPolymerIds = useMemo(() => {
-    const compare = searchParams.get('compare');
+    const compare = getSearchParam('compare');
     return compare ? compare.split(',') : [];
   }, [searchParams]);
 
@@ -89,21 +101,33 @@ export function DashboardClient({ initialItems }: DashboardClientProps) {
     );
   }, [items, keywordFilters]);
 
+  const buildUrl = (updates: Record<string, string | null>) => {
+    const currentParams = new URLSearchParams(window.location.search);
+    for (const [key, value] of Object.entries(updates)) {
+        if (value === null) {
+            currentParams.delete(key);
+        } else {
+            currentParams.set(key, value);
+        }
+    }
+    return `${pathname}?${currentParams.toString()}`;
+  }
+
 
   const handleOpenDrawer = (item: FeedItem) => {
-    const params = new URLSearchParams(searchParams);
-    params.set('drawer', 'ask');
-    params.set('type', item.type);
-    params.set('id', item.id);
-    router.push(`${pathname}?${params.toString()}`);
+    router.push(buildUrl({
+        drawer: 'ask',
+        type: item.type,
+        id: item.id
+    }));
   };
 
   const handleCloseDrawer = () => {
-    const params = new URLSearchParams(searchParams);
-    params.delete('drawer');
-    params.delete('type');
-    params.delete('id');
-    router.push(`${pathname}?${params.toString()}`);
+    router.push(buildUrl({
+        drawer: null,
+        type: null,
+        id: null
+    }));
   };
 
   const handleSaveToMemory = (item: FeedItem) => {
@@ -141,9 +165,7 @@ export function DashboardClient({ initialItems }: DashboardClientProps) {
       setPolymerToCompare(item);
     } else {
       if(polymerToCompare.id === item.id) return;
-      const params = new URLSearchParams(searchParams);
-      params.set('compare', `${polymerToCompare.id},${item.id}`);
-      router.push(`${pathname}?${params.toString()}`);
+      router.push(buildUrl({ compare: `${polymerToCompare.id},${item.id}` }));
       setPolymerToCompare(null);
     }
   };
@@ -153,9 +175,7 @@ export function DashboardClient({ initialItems }: DashboardClientProps) {
   }
 
   const handleCloseCompareSheet = () => {
-    const params = new URLSearchParams(searchParams);
-    params.delete('compare');
-    router.push(`${pathname}?${params.toString()}`);
+    router.push(buildUrl({ compare: null }));
   }
 
   const isSaved = (item: FeedItem) => !!memoryItems.find(memItem => memItem.id === item.id);

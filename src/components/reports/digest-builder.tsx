@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { Preview, FileDown, Send } from 'lucide-react';
+import { Eye, FileDown, Send } from 'lucide-react';
 import type { FeedItem } from '@/lib/data';
 
 type DigestBuilderProps = {
@@ -66,7 +66,7 @@ export function DigestBuilder({ selectedItems, onPreview, onSchedule }: DigestBu
         </div>
       </CardContent>
       <CardFooter className="flex flex-col gap-2 items-stretch">
-        <Button onClick={onPreview}><Preview className="mr-2 h-4 w-4" /> Preview</Button>
+        <Button onClick={onPreview}><Eye className="mr-2 h-4 w-4" /> Preview</Button>
         <div className="flex gap-2">
         <Button variant="secondary" className="flex-1"><FileDown className="mr-2 h-4 w-4" /> Export</Button>
         <Button variant="secondary" className="flex-1" onClick={onSchedule}><Send className="mr-2 h-4 w-4" /> Schedule</Button>
