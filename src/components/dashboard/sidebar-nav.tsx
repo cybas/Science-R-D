@@ -15,6 +15,7 @@ import {
   LayoutDashboard,
   Settings,
   Spline,
+  LineChart
 } from 'lucide-react';
 import Link from 'next/link';
 import { MoleculeIcon } from '../icons/molecule-icon';
@@ -27,6 +28,7 @@ const links = [
   { href: '/patents', label: 'Patents', icon: Award },
   { href: '/sources', label: 'Sources', icon: Database },
   { href: '/memory', label: 'Memory', icon: Folder },
+  { href: '/activity', label: 'Activity', icon: LineChart },
   { href: '/settings', label: 'Settings', icon: Settings },
 ];
 
