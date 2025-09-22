@@ -12,6 +12,8 @@ type ActivityFeedProps = {
   onAddToBasket: (item: Chemical) => void;
   onCompare: (item: Polymer) => void;
   polymerToCompare: Polymer | null;
+  memoryItems: FeedItem[];
+  basket: Chemical[];
 };
 
 export function ActivityFeed({ 
@@ -21,6 +23,8 @@ export function ActivityFeed({
   onAddToBasket,
   onCompare,
   polymerToCompare,
+  memoryItems,
+  basket
 }: ActivityFeedProps) {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -58,6 +62,8 @@ export function ActivityFeed({
           onAddToBasket={onAddToBasket}
           onCompare={onCompare}
           isComparing={!!polymerToCompare}
+          isSaved={!!memoryItems.find(m => m.id === item.id)}
+          isInBasket={item.type === 'chemical' && !!basket.find(b => b.id === item.id)}
         />
       ))}
     </div>

@@ -15,7 +15,7 @@ import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ChemicalStructureIcon } from '../icons/chemical-structure-icon';
 import { Table, TableBody, TableCell, TableRow, TableHead, TableHeader } from '@/components/ui/table';
-import { ExternalLink, Star, Plus, BrainCircuit } from 'lucide-react';
+import { ExternalLink, Bookmark, PlusSquare, MessageSquare } from 'lucide-react';
 import type { Chemical } from '@/lib/data';
 import Link from 'next/link';
 
@@ -23,6 +23,11 @@ type MoleculeDetailDrawerProps = {
   molecule: Chemical | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSaveToMemory: () => void;
+  onAddToBasket: () => void;
+  onAskAi: () => void;
+  isSaved: boolean;
+  isInBasket: boolean;
 };
 
 const quickPrompts = [
@@ -31,7 +36,16 @@ const quickPrompts = [
     'List safety & handling',
 ];
 
-export function MoleculeDetailDrawer({ molecule, open, onOpenChange }: MoleculeDetailDrawerProps) {
+export function MoleculeDetailDrawer({ 
+    molecule, 
+    open, 
+    onOpenChange,
+    onSaveToMemory,
+    onAddToBasket,
+    onAskAi,
+    isSaved,
+    isInBasket
+}: MoleculeDetailDrawerProps) {
   if (!molecule) return null;
 
   return (
@@ -78,7 +92,7 @@ export function MoleculeDetailDrawer({ molecule, open, onOpenChange }: MoleculeD
                  <Table>
                     <TableBody>
                         <TableRow><TableCell className="font-medium">Melting Point</TableCell><TableCell>N/A</TableCell></TableRow>
-                        <TableRow><TableCell className="font-medium">Boiling Point</TableCell><TableCell>N/A</TableCell></TableRow>
+                        <TableRow><TableCell className="font-medium">Boiling Point</TableCell><TableCell>N/A</TableRow></TableRow>
                         <TableRow><TableCell className="font-medium">Density</TableCell><TableCell>N/A</TableCell></TableRow>
                         <TableRow><TableCell className="font-medium">logP</TableCell><TableCell>N/A</TableCell></TableRow>
                         <TableRow><TableCell className="font-medium">Solubility</TableCell><TableCell>N/A</TableCell></TableRow>
@@ -102,16 +116,18 @@ export function MoleculeDetailDrawer({ molecule, open, onOpenChange }: MoleculeD
         </Tabs>
         
         <SheetFooter className="p-4 bg-background border-t space-y-2">
-            <div className="space-y-2">
-                <h4 className="font-semibold text-sm px-2">Quick Prompts</h4>
-                <div className="flex flex-wrap gap-2">
-                    {quickPrompts.map(p => <Badge key={p} variant="secondary" className="cursor-pointer">{p}</Badge>)}
-                </div>
-            </div>
             <div className="flex gap-2 w-full pt-2">
-                <Button variant="outline"><Star className="mr-2" />Save to Memory</Button>
-                <Button variant="outline"><Plus className="mr-2" />Add to Basket</Button>
-                <Button className="flex-1"><BrainCircuit className="mr-2" />Ask AI</Button>
+                <Button variant="outline" onClick={onSaveToMemory}>
+                    <Bookmark className={isSaved ? "fill-primary" : ""} />
+                    {isSaved ? 'Saved' : 'Save to Memory'}
+                </Button>
+                <Button variant="outline" onClick={onAddToBasket}>
+                    <PlusSquare className={isInBasket ? "fill-primary" : ""} />
+                    {isInBasket ? 'In Basket' : 'Add to Basket'}
+                </Button>
+                <Button className="flex-1" onClick={onAskAi}>
+                    <MessageSquare />Ask AI
+                </Button>
             </div>
         </SheetFooter>
       </SheetContent>

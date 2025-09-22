@@ -29,11 +29,36 @@ export function DashboardClient({ initialItems }: DashboardClientProps) {
   const activeDrawerItem = useMemo(() => {
     const itemId = searchParams.get('id');
     const itemType = searchParams.get('type');
-    if (searchParams.get('ask') === '1' && itemId && itemType) {
+    if (searchParams.get('drawer') === 'ask' && itemId && itemType) {
       return items.find(item => item.id === itemId && item.type === itemType) || null;
     }
     return null;
   }, [searchParams, items]);
+  
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key.toLowerCase() === 'a') {
+        const activeCard = document.querySelector(':hover [data-item-id]');
+        if (activeCard) {
+            event.preventDefault();
+            const id = activeCard.getAttribute('data-item-id');
+            const type = activeCard.getAttribute('data-item-type');
+            if(id && type) {
+                const item = items.find(i => i.id === id && i.type === type);
+                if (item) handleOpenDrawer(item);
+            }
+        }
+      }
+      if (event.key === 'Escape' && activeDrawerItem) {
+          handleCloseDrawer();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [activeDrawerItem, items]);
 
   const comparedPolymerIds = useMemo(() => {
     const compare = searchParams.get('compare');
@@ -67,10 +92,9 @@ export function DashboardClient({ initialItems }: DashboardClientProps) {
 
   const handleOpenDrawer = (item: FeedItem) => {
     const params = new URLSearchParams(searchParams);
-    params.set('drawer', 'detail');
+    params.set('drawer', 'ask');
     params.set('type', item.type);
     params.set('id', item.id);
-    params.set('ask', '1');
     router.push(`${pathname}?${params.toString()}`);
   };
 
@@ -79,14 +103,16 @@ export function DashboardClient({ initialItems }: DashboardClientProps) {
     params.delete('drawer');
     params.delete('type');
     params.delete('id');
-    params.delete('ask');
     router.push(`${pathname}?${params.toString()}`);
   };
 
   const handleSaveToMemory = (item: FeedItem) => {
-    if (!memoryItems.find(memItem => memItem.id === item.id)) {
+    const alreadyExists = memoryItems.find(memItem => memItem.id === item.id);
+    if (!alreadyExists) {
       setMemoryItems(prev => [item, ...prev]);
       toast({ title: "Saved to Memory", description: `${item.title || (item as Polymer).name} has been added to your memory.` });
+    } else {
+        toast({ title: "Already in Memory" });
     }
   };
 
@@ -99,6 +125,9 @@ export function DashboardClient({ initialItems }: DashboardClientProps) {
     if (!basket.find(basketItem => basketItem.id === item.id)) {
       setBasket(prev => [...prev, item]);
       toast({ title: "Added to Basket", description: `${item.title.split('—')[0].trim()} has been added to the basket.` });
+    } else {
+      setBasket(prev => prev.filter(basketItem => basketItem.id !== item.id));
+      toast({ title: "Removed from Basket" });
     }
   };
   
@@ -111,6 +140,7 @@ export function DashboardClient({ initialItems }: DashboardClientProps) {
     if (!polymerToCompare) {
       setPolymerToCompare(item);
     } else {
+      if(polymerToCompare.id === item.id) return;
       const params = new URLSearchParams(searchParams);
       params.set('compare', `${polymerToCompare.id},${item.id}`);
       router.push(`${pathname}?${params.toString()}`);
@@ -128,6 +158,8 @@ export function DashboardClient({ initialItems }: DashboardClientProps) {
     router.push(`${pathname}?${params.toString()}`);
   }
 
+  const isSaved = (item: FeedItem) => !!memoryItems.find(memItem => memItem.id === item.id);
+
   return (
     <div className="space-y-8">
       <WelcomeCard />
@@ -141,6 +173,8 @@ export function DashboardClient({ initialItems }: DashboardClientProps) {
             onAddToBasket={handleAddToBasket}
             onCompare={handleCompare}
             polymerToCompare={polymerToCompare}
+            memoryItems={memoryItems}
+            basket={basket}
           />
         </div>
         <div className="col-span-12 lg:col-span-4">
@@ -152,7 +186,13 @@ export function DashboardClient({ initialItems }: DashboardClientProps) {
           />
         </div>
       </div>
-      <AskAiDrawer item={activeDrawerItem} open={!!activeDrawerItem} onOpenChange={handleCloseDrawer} />
+      <AskAiDrawer 
+        item={activeDrawerItem} 
+        open={!!activeDrawerItem} 
+        onOpenChange={handleCloseDrawer}
+        onSaveToMemory={handleSaveToMemory}
+        isSaved={activeDrawerItem ? isSaved(activeDrawerItem) : false}
+      />
       <PolymerCompareSheet polymers={comparedPolymers} open={!!comparedPolymers} onOpenChange={handleCloseCompareSheet} />
       {polymerToCompare && (
         <div className="fixed bottom-4 right-4 z-50 bg-background border rounded-lg p-4 shadow-lg flex items-center gap-4">

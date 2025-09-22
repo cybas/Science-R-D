@@ -8,9 +8,10 @@ import { MoleculeCard } from './molecule-card';
 import { MoleculeSearch } from './molecule-search';
 import { MoleculeFilters } from './molecule-filters';
 import { MoleculeDetailDrawer } from './molecule-detail-drawer';
+import { AskAiDrawer } from '@/components/dashboard/ask-ai-drawer';
 import { SelectedBasket } from './selected-basket';
 import { useToast } from '@/hooks/use-toast';
-import type { Chemical } from '@/lib/data';
+import type { Chemical, FeedItem } from '@/lib/data';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { MoleculeCompareSheet } from './molecule-compare-sheet';
 import { FilterSheet } from './filter-sheet';
@@ -87,8 +88,8 @@ export function MoleculesClient({ molecules }: MoleculesClientProps) {
     // ... other filters
     if (filters.sort !== 'relevance') params.set('sort', filters.sort);
 
-    const drawerId = searchParams.get('id');
     const drawerType = searchParams.get('drawer');
+    const drawerId = searchParams.get('id');
     if (drawerId && drawerType) {
       params.set('drawer', drawerType);
       params.set('id', drawerId);
@@ -123,31 +124,62 @@ export function MoleculesClient({ molecules }: MoleculesClientProps) {
       items = items.filter(m => filters.hazards.includes(m.hazard));
     }
     
-    // This is a rough parse, a real implementation would be more robust
     items = items.filter(m => {
         const mw = parseFloat(m.mw);
         return mw >= filters.mw[0] && mw <= filters.mw[1];
     });
 
-
-    // Sorting
     if (filters.sort === 'mw') {
       items.sort((a, b) => parseFloat(a.mw) - parseFloat(b.mw));
     } else if (filters.sort === 'recent') {
-      // Assuming 'date' is like "1d ago" - this is a stub sort
       items.sort((a, b) => parseInt(a.date) - parseInt(b.date));
     }
 
     return items;
   }, [molecules, query, mode, filters]);
 
-  const activeDrawerItem = useMemo(() => {
+  const activeDetailItem = useMemo(() => {
     const itemId = searchParams.get('id');
     if (searchParams.get('drawer') === 'chem' && itemId) {
       return molecules.find((item) => item.id === itemId) || null;
     }
     return null;
   }, [searchParams, molecules]);
+
+  const activeAskAiItem = useMemo(() => {
+    const itemId = searchParams.get('id');
+    const itemType = searchParams.get('type');
+    if (searchParams.get('drawer') === 'ask' && itemId && itemType === 'chemical') {
+      return molecules.find((item) => item.id === itemId) || null;
+    }
+    return null;
+  }, [searchParams, molecules]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key.toLowerCase() === 'a') {
+        const activeCard = document.querySelector(':hover [data-item-id]');
+        if (activeCard) {
+            event.preventDefault();
+            const id = activeCard.getAttribute('data-item-id');
+            const type = activeCard.getAttribute('data-item-type');
+            if(id && type) {
+                const item = molecules.find(i => i.id === id);
+                if (item) handleAskAi(item);
+            }
+        }
+      }
+      if (event.key === 'Escape') {
+          if (activeDetailItem) handleCloseDetailDrawer();
+          if (activeAskAiItem) handleCloseAskAiDrawer();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [activeDetailItem, activeAskAiItem, molecules]);
 
   const comparedMoleculeIds = useMemo(() => {
     const compare = searchParams.get('compare');
@@ -163,19 +195,35 @@ export function MoleculesClient({ molecules }: MoleculesClientProps) {
     return null;
   }, [comparedMoleculeIds, molecules]);
 
-  const handleOpenDrawer = (item: Chemical) => {
+  const handleOpenDetailDrawer = (item: Chemical) => {
     const params = new URLSearchParams(searchParams);
     params.set('drawer', 'chem');
     params.set('id', item.id);
     router.push(`${pathname}?${params.toString()}`);
   };
-
-  const handleCloseDrawer = () => {
+  
+  const handleCloseDetailDrawer = () => {
     const params = new URLSearchParams(searchParams);
     params.delete('drawer');
     params.delete('id');
     router.push(`${pathname}?${params.toString()}`);
   };
+
+  const handleAskAi = (item: Chemical) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('drawer', 'ask');
+    params.set('type', 'chemical');
+    params.set('id', item.id);
+    router.push(`${pathname}?${params.toString()}`);
+  };
+
+  const handleCloseAskAiDrawer = () => {
+    const params = new URLSearchParams(searchParams);
+    params.delete('drawer');
+    params.delete('type');
+    params.delete('id');
+    router.push(`${pathname}?${params.toString()}`);
+  }
 
   const handleSaveToMemory = (item: Chemical) => {
     if (!memoryItems.find((memItem) => memItem.id === item.id)) {
@@ -184,6 +232,8 @@ export function MoleculesClient({ molecules }: MoleculesClientProps) {
         title: 'Saved to Memory',
         description: `${item.title.split('—')[0].trim()} has been added to your memory.`,
       });
+    } else {
+        toast({ title: "Already in Memory" });
     }
   };
 
@@ -194,6 +244,9 @@ export function MoleculesClient({ molecules }: MoleculesClientProps) {
         title: 'Added to Basket',
         description: `${item.title.split('—')[0].trim()} has been added to the basket.`,
       });
+    } else {
+      setBasket((prev) => prev.filter((basketItem) => basketItem.id !== item.id));
+      toast({ title: 'Removed from Basket' });
     }
   };
 
@@ -214,6 +267,7 @@ export function MoleculesClient({ molecules }: MoleculesClientProps) {
         }
 
         if (newList.length >= 2) {
+            toast({ title: 'Added to Compare' });
             const params = new URLSearchParams(searchParams);
             params.set('compare', newList.map(i => i.id).join(','));
             router.push(`${pathname}?${params.toString()}`);
@@ -229,16 +283,13 @@ export function MoleculesClient({ molecules }: MoleculesClientProps) {
     params.delete('compare');
     router.push(`${pathname}?${params.toString()}`);
   }
-
-  const handleAskAi = (item: Chemical) => {
-    // This would open the Ask AI drawer, which is a global component
-    // For now, we just log to console
-    console.log('Ask AI for:', item.title);
-  };
   
   const handleFilterChange = (newFilters: Partial<FilterValues>) => {
     setFilters(prev => ({...prev, ...newFilters}));
   }
+  
+  const isSaved = (item: FeedItem) => !!memoryItems.find(memItem => memItem.id === item.id);
+  const isInBasket = (item: Chemical) => !!basket.find(basketItem => basketItem.id === item.id);
 
   return (
     <div className="space-y-8">
@@ -278,13 +329,15 @@ export function MoleculesClient({ molecules }: MoleculesClientProps) {
                 <MoleculeCard
                   key={molecule.id}
                   molecule={molecule}
-                  onDetails={() => handleOpenDrawer(molecule)}
+                  onDetails={() => handleOpenDetailDrawer(molecule)}
                   onSaveToMemory={() => handleSaveToMemory(molecule)}
                   onAskAi={() => handleAskAi(molecule)}
                   onAddToBasket={() => handleAddToBasket(molecule)}
                   onCompare={() => handleCompareToggle(molecule)}
                   isComparing={isComparing}
                   isSelectedForCompare={!!compareList.find(c => c.id === molecule.id)}
+                  isSaved={isSaved(molecule)}
+                  isInBasket={isInBasket(molecule)}
                 />
               ))
             ) : (
@@ -306,9 +359,22 @@ export function MoleculesClient({ molecules }: MoleculesClientProps) {
       </div>
 
       <MoleculeDetailDrawer
-        molecule={activeDrawerItem}
-        open={!!activeDrawerItem}
-        onOpenChange={handleCloseDrawer}
+        molecule={activeDetailItem}
+        open={!!activeDetailItem}
+        onOpenChange={handleCloseDetailDrawer}
+        onSaveToMemory={() => activeDetailItem && handleSaveToMemory(activeDetailItem)}
+        onAddToBasket={() => activeDetailItem && handleAddToBasket(activeDetailItem)}
+        onAskAi={() => activeDetailItem && handleAskAi(activeDetailItem)}
+        isSaved={!!activeDetailItem && isSaved(activeDetailItem)}
+        isInBasket={!!activeDetailItem && isInBasket(activeDetailItem)}
+      />
+
+      <AskAiDrawer 
+        item={activeAskAiItem} 
+        open={!!activeAskAiItem} 
+        onOpenChange={handleCloseAskAiDrawer}
+        onSaveToMemory={handleSaveToMemory}
+        isSaved={activeAskAiItem ? isSaved(activeAskAiItem) : false}
       />
       
       <MoleculeCompareSheet
