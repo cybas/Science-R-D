@@ -15,7 +15,8 @@ import {
   LayoutDashboard,
   Settings,
   Spline,
-  LineChart
+  LineChart,
+  FolderKanban,
 } from 'lucide-react';
 import Link from 'next/link';
 import { MoleculeIcon } from '../icons/molecule-icon';
@@ -24,6 +25,7 @@ const links = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/molecules', label: 'Molecules', icon: MoleculeIcon },
   { href: '/polymers', label: 'Polymers', icon: Spline },
+  { href: '/projects', label: 'Projects', icon: FolderKanban },
   { href: '/papers', label: 'Papers', icon: FileText },
   { href: '/patents', label: 'Patents', icon: Award },
   { href: '/sources', label: 'Sources', icon: Database },
