@@ -1,14 +1,7 @@
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { PolymersClient } from '@/components/polymers/polymers-client';
+import { DATA } from '@/lib/data';
 
 export default function PolymersPage() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Polymers</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p>Browse and search for polymers.</p>
-      </CardContent>
-    </Card>
-  );
+  const polymers = DATA.filter((item) => item.type === 'polymer');
+  return <PolymersClient polymers={polymers as any[]} allChemicals={DATA.filter(item => item.type === 'chemical') as any[]} />;
 }

@@ -39,7 +39,7 @@ export function SidebarNav() {
         <SidebarMenuItem key={link.href}>
           <SidebarMenuButton
             asChild
-            isActive={pathname === link.href}
+            isActive={pathname.startsWith(link.href)}
             tooltip={link.label}
           >
             <Link href={link.href}>

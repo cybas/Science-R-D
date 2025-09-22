@@ -17,7 +17,7 @@ type FilterBarProps = {
   onKeywordFilterToggle: (keyword: string) => void;
 };
 
-const keywordOptions = ['PET', 'Polyester', 'Nanocomposites'];
+const keywordOptions = ['PET', 'Polyester', 'Nanocomposites', 'Polycarbonate'];
 
 export function FilterBar({ resultCount, keywordFilters, onKeywordFilterToggle }: FilterBarProps) {
   return (
