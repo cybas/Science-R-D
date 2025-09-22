@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { MoreHorizontal } from 'lucide-react';
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '../ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 
 const apiKeys = [
     { key: 'ci-build-key', created: '2025-09-15', used: '2d ago', status: 'Active' },
@@ -30,16 +30,16 @@ const webhooks = [
 
 export function ApiSettings() {
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader className="flex-row items-center justify-between">
+    <div className="space-y-8">
+      <Card className="rounded-xl border-slate-200 shadow-sm">
+        <CardHeader className="flex-row items-center justify-between p-5">
             <div>
-              <CardTitle>API Keys</CardTitle>
+              <CardTitle className="text-lg">API Keys</CardTitle>
               <CardDescription>Manage API keys for programmatic access.</CardDescription>
             </div>
             <Button>Create API Key</Button>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-5">
           <Table>
             <TableHeader>
               <TableRow>
@@ -71,15 +71,15 @@ export function ApiSettings() {
           </Table>
         </CardContent>
       </Card>
-      <Card>
-        <CardHeader  className="flex-row items-center justify-between">
+      <Card className="rounded-xl border-slate-200 shadow-sm">
+        <CardHeader  className="flex-row items-center justify-between p-5">
           <div>
-            <CardTitle>Webhooks</CardTitle>
+            <CardTitle className="text-lg">Webhooks</CardTitle>
             <CardDescription>Configure webhooks to receive events.</CardDescription>
           </div>
           <Button>Add Webhook</Button>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 p-5">
            <Table>
             <TableHeader>
               <TableRow>
@@ -108,7 +108,7 @@ export function ApiSettings() {
               ))}
             </TableBody>
           </Table>
-          <div>
+          <div className="pt-4">
             <h4 className="font-medium text-sm">Delivery Log</h4>
             <div className="p-3 mt-2 border rounded-lg text-xs font-mono bg-muted/50 h-32 overflow-auto">
                 <p>2025-09-22 10:05:01 item.saved → https://hooks.example/ester-rd: 200 OK</p>

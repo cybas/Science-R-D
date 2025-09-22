@@ -10,21 +10,22 @@ import {
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 
 export function AppearanceSettings() {
   return (
-    <Card>
+    <Card className="rounded-xl border-slate-200 shadow-sm">
       <CardHeader>
-        <CardTitle>Appearance</CardTitle>
+        <CardTitle className="text-lg">Appearance</CardTitle>
         <CardDescription>
           Customize the look and feel of the application.
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="space-y-2">
-            <Label>Theme</Label>
+      <CardContent className="space-y-6 p-5">
+        <div className="flex items-center justify-between">
+            <Label className="min-w-[160px]">Theme</Label>
             <Select defaultValue="auto">
-                <SelectTrigger><SelectValue/></SelectTrigger>
+                <SelectTrigger className="flex-1"><SelectValue/></SelectTrigger>
                 <SelectContent>
                     <SelectItem value="auto">Auto (system)</SelectItem>
                     <SelectItem value="light">Light</SelectItem>
@@ -32,10 +33,10 @@ export function AppearanceSettings() {
                 </SelectContent>
             </Select>
         </div>
-        <div className="space-y-2">
-            <Label>Accent Color</Label>
-            <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-full bg-primary border-2 border-primary-foreground ring-2 ring-ring" />
+        <div className="flex items-center justify-between">
+            <Label className="min-w-[160px]">Accent Color</Label>
+            <div className="flex items-center gap-2 flex-1">
+                <div className="h-9 w-9 rounded-full bg-primary border-2 border-primary-foreground ring-2 ring-ring" />
                 <Input readOnly defaultValue="Deep Blue (hsl(226, 70%, 40%))" />
             </div>
         </div>

@@ -12,8 +12,8 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
-import { Badge } from '../ui/badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
 
 const exports = [
     { date: '2025-09-20', type: 'Memory (CSV)', status: 'Ready'},
@@ -22,17 +22,17 @@ const exports = [
 
 export function DataSettings() {
   return (
-     <div className="space-y-6">
-    <Card>
+     <div className="space-y-8">
+    <Card className="rounded-xl border-slate-200 shadow-sm">
       <CardHeader>
-        <CardTitle>Data & Exports</CardTitle>
+        <CardTitle className="text-lg">Data & Exports</CardTitle>
         <CardDescription>
           Manage data retention policies and view export history.
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6 p-5">
         <div>
-            <h3 className="font-semibold">Retention</h3>
+            <h3 className="font-semibold text-base">Retention</h3>
              <div className="space-y-4 mt-2">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
@@ -68,7 +68,7 @@ export function DataSettings() {
             </div>
         </div>
          <div>
-            <h3 className="font-semibold">Exports History</h3>
+            <h3 className="font-semibold text-base">Exports History</h3>
             <Table className="mt-2">
                 <TableHeader>
                     <TableRow>
@@ -92,11 +92,11 @@ export function DataSettings() {
         </div>
       </CardContent>
     </Card>
-     <Card className="border-destructive">
+     <Card className="border-destructive rounded-xl shadow-sm">
         <CardHeader>
-            <CardTitle>Danger Zone</CardTitle>
+            <CardTitle className="text-lg">Danger Zone</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-5">
             <div className="flex items-center justify-between">
                 <div>
                     <h4 className="font-medium">Delete Organization</h4>

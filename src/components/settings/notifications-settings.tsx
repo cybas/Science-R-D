@@ -18,16 +18,16 @@ export function NotificationsSettings() {
   const { toast } = useToast();
 
   return (
-    <Card>
+    <Card className="rounded-xl border-slate-200 shadow-sm">
       <CardHeader>
-        <CardTitle>Notifications</CardTitle>
+        <CardTitle className="text-lg">Notifications</CardTitle>
         <CardDescription>
           Configure how you receive digests and alerts.
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6 p-5">
         <div className="space-y-4">
-          <h3 className="font-semibold">Digests & Alerts</h3>
+          <h3 className="text-base font-semibold">Digests & Alerts</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
             <div className="space-y-2">
               <Label>Email digest</Label>
@@ -63,15 +63,15 @@ export function NotificationsSettings() {
           </Button>
         </div>
         <div className="space-y-2">
-            <h4 className="font-medium">In-app alerts</h4>
-            <div className="space-y-2 p-3 border rounded-lg">
+            <h3 className="text-base font-semibold">In-app alerts</h3>
+            <div className="space-y-2 p-4 border rounded-lg">
                 <div className="flex items-center justify-between"><Label>New Matches</Label><Switch defaultChecked/></div>
                 <div className="flex items-center justify-between"><Label>Crawl Failures</Label><Switch defaultChecked/></div>
                 <div className="flex items-center justify-between"><Label>Memory Mentions</Label><Switch defaultChecked/></div>
             </div>
         </div>
         <div className="space-y-4">
-          <h3 className="font-semibold">Webhook</h3>
+          <h3 className="text-base font-semibold">Webhook</h3>
           <div className="space-y-2">
             <Label htmlFor="webhook-url">Webhook URL (optional)</Label>
             <Input id="webhook-url" placeholder="https://hooks.example/ester-rd" defaultValue="https://hooks.example/ester-rd" />

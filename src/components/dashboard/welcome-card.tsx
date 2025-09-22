@@ -19,6 +19,9 @@ export function WelcomeCard() {
             Explore monomers, polymer classes, papers & patents for next-gen materials.
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
+            <Link href="/settings?tab=research-defaults#research-defaults">
+              <Badge variant="secondary" className="cursor-pointer hover:bg-muted">Manage Keywords</Badge>
+            </Link>
             <Badge variant="secondary" className="cursor-pointer hover:bg-muted">High Tg</Badge>
             <Badge variant="secondary" className="cursor-pointer hover:bg-muted">BOPET ecosystem</Badge>
             <Badge variant="secondary" className="cursor-pointer hover:bg-muted">Bio-derived monomers</Badge>

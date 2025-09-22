@@ -19,18 +19,18 @@ const integrations = [
 
 export function IntegrationsSettings() {
   return (
-    <Card>
+    <Card className="rounded-xl border-slate-200 shadow-sm">
       <CardHeader>
-        <CardTitle>Integrations</CardTitle>
+        <CardTitle className="text-lg">Integrations</CardTitle>
         <CardDescription>
           Connect Ester R&D to other services.
         </CardDescription>
       </CardHeader>
-      <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5">
         {integrations.map(int => (
-            <Card key={int.name}>
+            <Card key={int.name} className="rounded-xl border-slate-200 shadow-sm">
                 <CardHeader>
-                    <CardTitle className="text-lg flex items-center justify-between">
+                    <CardTitle className="text-base flex items-center justify-between">
                         {int.name}
                         {int.connected ? 
                             <Badge variant="secondary" className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1"/>Connected</Badge> : 
@@ -38,7 +38,7 @@ export function IntegrationsSettings() {
                     </CardTitle>
                     <CardDescription>{int.description}</CardDescription>
                 </CardHeader>
-                <CardContent className="flex justify-end">
+                <CardContent className="flex justify-end p-5 pt-0">
                     {int.enterprise ? (
                         <Button variant="secondary" disabled><Building className="h-4 w-4 mr-2"/>Enterprise</Button>
                     ) : (

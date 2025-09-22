@@ -23,61 +23,59 @@ import { Separator } from '@/components/ui/separator';
 
 export function ProfileSettings() {
   return (
-    <div className="space-y-6">
-      <Card>
+    <div className="space-y-8">
+      <Card className="rounded-xl border-slate-200 shadow-sm">
         <CardHeader>
-          <CardTitle>User Profile</CardTitle>
+          <CardTitle className="text-lg">User Profile</CardTitle>
           <CardDescription>
             Manage your personal information.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="fullName">Full Name</Label>
-              <Input id="fullName" defaultValue="Jai Singhania" />
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 p-5">
+            <div className="flex items-center justify-between">
+              <Label className="min-w-[160px]">Full Name</Label>
+              <Input id="fullName" defaultValue="Jai Singhania" className="flex-1"/>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" defaultValue="jai@ester.example" readOnly />
+            <div className="flex items-center justify-between">
+              <Label className="min-w-[160px]">Email</Label>
+              <Input id="email" defaultValue="jai@ester.example" readOnly className="flex-1" />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="title">Title</Label>
-              <Input id="title" defaultValue="R&D Lead" />
+            <div className="flex items-center justify-between">
+              <Label className="min-w-[160px]">Title</Label>
+              <Input id="title" defaultValue="R&D Lead" className="flex-1"/>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="department">Department</Label>
-              <Input id="department" defaultValue="Polyesters" />
+            <div className="flex items-center justify-between">
+              <Label className="min-w-[160px]">Department</Label>
+              <Input id="department" defaultValue="Polyesters" className="flex-1"/>
             </div>
-             <div className="space-y-2">
-              <Label htmlFor="locale">Locale</Label>
+             <div className="flex items-center justify-between">
+              <Label className="min-w-[160px]">Locale</Label>
                <Select defaultValue="en-IN">
-                <SelectTrigger id="locale"><SelectValue /></SelectTrigger>
+                <SelectTrigger id="locale" className="flex-1"><SelectValue /></SelectTrigger>
                 <SelectContent>
                     <SelectItem value="en-IN">English (India)</SelectItem>
                     <SelectItem value="en-US">English (United States)</SelectItem>
                 </SelectContent>
                </Select>
             </div>
-             <div className="space-y-2">
-              <Label htmlFor="timezone">Timezone</Label>
+             <div className="flex items-center justify-between">
+              <Label className="min-w-[160px]">Timezone</Label>
                <Select defaultValue="Asia/Kolkata">
-                <SelectTrigger id="timezone"><SelectValue /></SelectTrigger>
+                <SelectTrigger id="timezone" className="flex-1"><SelectValue /></SelectTrigger>
                 <SelectContent>
                     <SelectItem value="Asia/Kolkata">Asia/Kolkata (GMT+5:30)</SelectItem>
                      <SelectItem value="America/New_York">America/New York (GMT-4:00)</SelectItem>
                 </SelectContent>
                </Select>
             </div>
-          </div>
         </CardContent>
       </Card>
-      <Card>
+      <Card className="rounded-xl border-slate-200 shadow-sm">
         <CardHeader>
-          <CardTitle>Security</CardTitle>
+          <CardTitle className="text-lg">Security</CardTitle>
           <CardDescription>Manage your security settings.</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 p-5">
            <div className="flex items-center justify-between rounded-lg border p-3">
               <div className="space-y-0.5">
                 <Label>Multi-Factor Authentication (MFA)</Label>
@@ -96,41 +94,41 @@ export function ProfileSettings() {
                 </div>
             </div>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="p-5 border-t border-slate-200">
             <Button variant="outline">Sign out other sessions</Button>
         </CardFooter>
       </Card>
-       <Card>
+       <Card className="rounded-xl border-slate-200 shadow-sm">
         <CardHeader>
-          <CardTitle>Preferences</CardTitle>
+          <CardTitle className="text-lg">Preferences</CardTitle>
           <CardDescription>Customize your application experience.</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="landingRoute">Default landing route</Label>
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 p-5">
+            <div className="flex items-center justify-between">
+              <Label className="min-w-[160px]">Default landing route</Label>
                <Select defaultValue="/dashboard">
-                <SelectTrigger id="landingRoute"><SelectValue /></SelectTrigger>
+                <SelectTrigger id="landingRoute" className="flex-1"><SelectValue /></SelectTrigger>
                 <SelectContent>
                     <SelectItem value="/dashboard">/dashboard</SelectItem>
                     <SelectItem value="/memory">/memory</SelectItem>
                 </SelectContent>
                </Select>
             </div>
-            <div className="flex items-center justify-between rounded-lg border p-3">
-              <div className="space-y-0.5">
-                <Label>Keyboard shortcuts</Label>
-              </div>
-              <Switch defaultChecked />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="density">Density</Label>
+            <div className="flex items-center justify-between">
+              <Label className="min-w-[160px]">Density</Label>
                <Select defaultValue="comfortable">
-                <SelectTrigger id="density"><SelectValue /></SelectTrigger>
+                <SelectTrigger id="density" className="flex-1"><SelectValue /></SelectTrigger>
                 <SelectContent>
                     <SelectItem value="comfortable">Comfortable</SelectItem>
                     <SelectItem value="compact">Compact</SelectItem>
                 </SelectContent>
                </Select>
+            </div>
+            <div className="flex items-center justify-between rounded-lg border p-3 md:col-span-2">
+              <div className="space-y-0.5">
+                <Label>Keyboard shortcuts</Label>
+              </div>
+              <Switch defaultChecked />
             </div>
         </CardContent>
       </Card>

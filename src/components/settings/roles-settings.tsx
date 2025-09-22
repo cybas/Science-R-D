@@ -25,17 +25,17 @@ const roles = [
 
 export function RolesSettings() {
   return (
-    <Card>
+    <Card className="rounded-xl border-slate-200 shadow-sm">
       <CardHeader>
-        <CardTitle>Roles & Permissions</CardTitle>
+        <CardTitle className="text-lg">Roles & Permissions</CardTitle>
         <CardDescription>
           Manage user roles and their access levels.
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6 p-5">
         <div>
-            <h3 className="text-lg font-semibold">Assignments</h3>
-            <Table>
+            <h3 className="text-base font-semibold">Assignments</h3>
+            <Table className="mt-2">
                 <TableHeader>
                     <TableRow>
                         <TableHead>Role</TableHead>
@@ -55,7 +55,7 @@ export function RolesSettings() {
             </Table>
         </div>
          <div>
-            <h3 className="text-lg font-semibold">Permission Notes</h3>
+            <h3 className="text-base font-semibold">Permission Notes</h3>
             <ul className="list-disc pl-5 text-sm text-muted-foreground mt-2 space-y-1">
                 <li>IP Analyst can create digests & export but cannot edit Sources.</li>
                 <li>Viewer has Ask-AI allowed (daily token cap: 50).</li>
