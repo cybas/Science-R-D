@@ -1,14 +1,7 @@
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { MoleculesClient } from '@/components/molecules/molecules-client';
+import { DATA } from '@/lib/data';
 
 export default function MoleculesPage() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Molecules</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p>Browse and search for molecules.</p>
-      </CardContent>
-    </Card>
-  );
+  const molecules = DATA.filter((item) => item.type === 'chemical');
+  return <MoleculesClient molecules={molecules as any[]} />;
 }

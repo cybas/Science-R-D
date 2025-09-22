@@ -6,14 +6,16 @@ export type Chemical = {
   mw: string;
   hazard: string;
   smiles: string;
+  inchiKey?: string;
   href: string;
   tags: string[];
   date: string;
   source: 'PubChem';
+  role?: 'Monomer' | 'Initiator' | 'Catalyst' | 'Solvent' | 'Additive';
 };
 
 export type Polymer = {
-  id: string;
+  id:string;
   type: 'polymer';
   name: string;
   monomers: string[];
@@ -73,6 +75,7 @@ export const DATA: FeedItem[] = [
     tags: ['PET', 'Polyester'],
     date: '1d ago',
     source: 'PubChem',
+    role: 'Monomer',
   },
   {
     id: 'poly-pet',
@@ -116,6 +119,7 @@ export const DATA: FeedItem[] = [
     tags: ['PET', 'Monomer'],
     date: '2d ago',
     source: 'PubChem',
+    role: 'Monomer',
   },
   {
     id: 'pat-bopet-barrier',
@@ -153,6 +157,7 @@ export const DATA: FeedItem[] = [
     tags: ['Bio-derived', 'Diol'],
     date: '3d ago',
     source: 'PubChem',
+    role: 'Monomer',
   },
   {
     id: 'poly-pef',
@@ -164,7 +169,7 @@ export const DATA: FeedItem[] = [
     props: {
       tg: '~85 °C',
       tm: '210–230 °C',
-      modulus: '3.0 GPa', // Example value
+      modulus: '3.0 GPa',
     },
     notes: 'O2 barrier ↑ vs PET',
     href: 'https://polymer.nims.go.jp/',
@@ -224,5 +229,76 @@ export const DATA: FeedItem[] = [
     tags: ['BOPET', 'Packaging'],
     href: 'https://www.lens.org/',
     source: 'Lens',
+  },
+  // New molecules data
+  {
+    id: 'chem-fdca',
+    type: 'chemical',
+    title: '2,5-Furandicarboxylic acid (FDCA) — 3238-40-2',
+    formula: 'C6H4O5',
+    mw: '156.09 g/mol',
+    smiles: 'O=C(O)c1oc(cc1)C(=O)O',
+    hazard: 'N/A',
+    role: 'Monomer',
+    tags: ['Bio-based', 'PEF'],
+    href: 'https://pubchem.ncbi.nlm.nih.gov/',
+    date: '3d ago',
+    source: 'PubChem'
+  },
+  {
+    id: 'chem-nda',
+    type: 'chemical',
+    title: 'Naphthalene-2,6-dicarboxylic acid (NDA) — 1141-38-4',
+    formula: 'C12H8O4',
+    mw: '216.19 g/mol',
+    smiles: 'O=C(O)c1ccc2cc(ccc2c1)C(=O)O',
+    hazard: 'N/A',
+    role: 'Monomer',
+    tags: ['PEN', 'High-Tg'],
+    href: 'https://pubchem.ncbi.nlm.nih.gov/',
+    date: '4d ago',
+    source: 'PubChem'
+  },
+  {
+    id: 'chem-sb2o3',
+    type: 'chemical',
+    title: 'Antimony trioxide — 1309-64-4',
+    formula: 'Sb2O3',
+    mw: '291.52 g/mol',
+    smiles: 'O=[Sb]O[Sb]=O',
+    hazard: 'H351',
+    role: 'Catalyst',
+    tags: ['Polycondensation catalyst'],
+    href: 'https://pubchem.ncbi.nlm.nih.gov/',
+    date: '5d ago',
+    source: 'PubChem'
+  },
+  {
+    id: 'chem-tibut',
+    type: 'chemical',
+    title: 'Titanium(IV) butoxide — 5593-70-4',
+    formula: 'C16H36O4Ti',
+    mw: '340.32 g/mol',
+    smiles: 'CCCC[O-].CCCC[O-].CCCC[O-].CCCC[O-].[Ti+4]',
+    hazard: 'H314',
+    role: 'Catalyst',
+    tags: ['Ti(OBu)4'],
+    href: 'https://pubchem.ncbi.nlm.nih.gov/',
+    date: '5d ago',
+    source: 'PubChem'
+  },
+  {
+    id: 'chem-dmt',
+    type: 'chemical',
+    title: 'Dimethyl terephthalate (DMT) — 120-61-6',
+    formula: 'C10H10O4',
+    mw: '194.18 g/mol',
+    smiles: 'COC(=O)c1ccc(cc1)C(=O)OC',
+    hazard: 'N/A',
+    role: 'Monomer',
+    tags: ['PET'],
+    href: 'https://pubchem.ncbi.nlm.nih.gov/',
+    date: '6d ago',
+    source: 'PubChem'
   },
 ];
