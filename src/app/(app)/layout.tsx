@@ -42,9 +42,9 @@ export default function AppLayout({
       </Sidebar>
       <SidebarInset>
         <header className="sticky top-0 z-40 flex h-16 items-center border-b bg-background/80 backdrop-blur-sm">
-          <div className="mx-auto flex w-full max-w-screen-xl items-center gap-4 px-4 md:px-6">
-            <div className="flex-1">
-              <SidebarTrigger className="md:hidden" />
+          <div className="mx-auto flex w-full max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
+            <div className="flex-1 md:hidden">
+              <SidebarTrigger />
             </div>
             <div className="hidden w-full max-w-md flex-1 md:block lg:max-w-lg xl:max-w-2xl">
               <div className="relative">
@@ -60,8 +60,8 @@ export default function AppLayout({
             </div>
           </div>
         </header>
-        <main className="flex-1 p-4 md:p-6">
-          <div className="mx-auto w-full max-w-screen-xl">{children}</div>
+        <main className="flex-1 p-4 md:p-6 lg:p-8">
+          <div className="mx-auto w-full max-w-7xl">{children}</div>
         </main>
       </SidebarInset>
     </SidebarProvider>

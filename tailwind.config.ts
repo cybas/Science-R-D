@@ -1,5 +1,7 @@
 import type {Config} from 'tailwindcss';
 
+const { fontFamily } = require('tailwindcss/defaultTheme')
+
 export default {
   darkMode: ['class'],
   content: [
@@ -8,10 +10,21 @@ export default {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    container: {
+      center: true,
+      padding: {
+        DEFAULT: '1rem',
+        md: '1.5rem',
+      },
+      screens: {
+        "2xl": "1280px",
+      },
+    },
     extend: {
       fontFamily: {
-        body: ['Inter', 'sans-serif'],
-        headline: ['Inter', 'sans-serif'],
+        sans: ['var(--font-inter)', ...fontFamily.sans],
+        body: ['var(--font-inter)', ...fontFamily.sans],
+        headline: ['var(--font-inter)', ...fontFamily.sans],
         code: ['monospace'],
       },
       colors: {
@@ -93,6 +106,10 @@ export default {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
+      spacing: {
+        'gutter-d': '24px',
+        'gutter-t': '16px',
+      }
     },
   },
   plugins: [require('tailwindcss-animate')],

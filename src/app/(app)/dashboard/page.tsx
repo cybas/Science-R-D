@@ -1,23 +1,8 @@
-import { WelcomeCard } from "@/components/dashboard/welcome-card";
-import { FilterBar } from "@/components/dashboard/filter-bar";
-import { MainFeed } from "@/components/dashboard/main-feed";
-import { Workbench } from "@/components/dashboard/workbench";
+import { DashboardClient } from '@/components/dashboard/dashboard-client';
+import { DATA } from '@/lib/data';
 
 export default function DashboardPage() {
-  return (
-    <div className="space-y-6">
-      <WelcomeCard />
-      <div className="space-y-8">
-        <FilterBar />
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-          <div className="lg:col-span-8">
-            <MainFeed />
-          </div>
-          <div className="lg:col-span-4">
-            <Workbench />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  // We are fetching data here, in a real app this would be an API call.
+  const items = DATA;
+  return <DashboardClient initialItems={items} />;
 }
