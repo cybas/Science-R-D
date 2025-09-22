@@ -10,7 +10,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Trash2 } from 'lucide-react';
 import Link from 'next/link';
-import type { Chemical } from '@/lib/data';
+import type { Chemical, FeedItem } from '@/lib/data';
 
 const processFilters = [
   'Step-growth',
@@ -26,7 +26,7 @@ const processFilters = [
 type WorkbenchProps = {
   basket: Chemical[];
   onRemoveFromBasket: (item: Chemical) => void;
-  memoryItems: any[];
+  memoryItems: FeedItem[];
   onRemoveFromMemory: (item: any) => void;
 };
 
@@ -140,9 +140,13 @@ export function Workbench({ basket, onRemoveFromBasket, memoryItems, onRemoveFro
                       <Card key={item.id} className="p-3">
                         <p className="font-semibold text-sm truncate">{item.title || item.name}</p>
                         <p className="text-xs text-muted-foreground truncate">{item.summary || `ID: ${item.id}`}</p>
-                        <div className="mt-2 flex gap-2">
-                           <Button variant="secondary" size="sm">Open</Button>
-                           <Button variant="secondary" size="sm">Compare</Button>
+                        <div className="mt-2 flex justify-between">
+                            <div className="flex gap-2">
+                                <Button asChild variant="secondary" size="sm">
+                                    <Link href={`/memory?drawer=item&id=${item.id}&type=${item.type}`}>Open</Link>
+                                </Button>
+                               <Button variant="secondary" size="sm">Compare</Button>
+                            </div>
                            <Button variant="ghost" size="sm" onClick={() => onRemoveFromMemory(item)}>Remove</Button>
                         </div>
                       </Card>
@@ -154,6 +158,9 @@ export function Workbench({ basket, onRemoveFromBasket, memoryItems, onRemoveFro
                 </div>
               )}
             </ScrollArea>
+             <Button variant="link" asChild className="w-full">
+                <Link href="/memory">View all in Memory</Link>
+            </Button>
           </CardContent>
         </Card>
       </TabsContent>
