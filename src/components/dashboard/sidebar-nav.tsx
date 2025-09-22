@@ -18,6 +18,7 @@ import {
   Spline,
   LineChart,
   FolderKanban,
+  BookCopy,
 } from 'lucide-react';
 import Link from 'next/link';
 import { MoleculeIcon } from '../icons/molecule-icon';
@@ -30,6 +31,7 @@ const links = [
   { href: '/experiments', label: 'Experiments', icon: FlaskConical },
   { href: '/papers', label: 'Papers', icon: FileText },
   { href: '/patents', label: 'Patents', icon: Award },
+  { href: '/reports', label: 'Reports', icon: BookCopy },
   { href: '/sources', label: 'Sources', icon: Database },
   { href: '/memory', label: 'Memory', icon: Folder },
   { href: '/activity', label: 'Activity', icon: LineChart },
